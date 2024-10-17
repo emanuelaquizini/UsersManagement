@@ -27,12 +27,42 @@ namespace UserManagementApi.Controllers
             return result;
         }
 
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUserByUsername(string username)
+        {
+            var user = await _context.GetUserByUsernameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(User user)
         {
+            if (await _context.Users.AnyAsync(u => u.Username == user.Username))
+            {
+                return BadRequest("Username already exists.");
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email == user.Email))
+            {
+                return BadRequest("Email already exists.");
+            }
+
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "An error occurred while saving the user.");
+            }
+
+            return CreatedAtAction(nameof(GetUserByUsername), new { username = user.Username }, user);
         }
 
     }

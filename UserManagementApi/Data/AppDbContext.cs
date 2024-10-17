@@ -15,5 +15,23 @@ namespace UserManagementApi.Data
             await SaveChangesAsync();
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+        }
+
+        public async Task<User> GetUserByUsernameAsync(string username)
+        {
+            return await Users.FirstOrDefaultAsync(u => u.Username == username);
+        }
+
     }
 }
