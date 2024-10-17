@@ -10,6 +10,11 @@
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
+        "serve": {
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          }
+        },
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
@@ -101,5 +106,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "b495bee8-1d6f-4e0b-a1ec-8c1a598361ab"
   }
 }
