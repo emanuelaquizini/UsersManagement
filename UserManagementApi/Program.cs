@@ -21,6 +21,15 @@ builder.Services.AddSwaggerGen();
 // Angular
 builder.Services.AddControllersWithViews();
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,12 +50,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+//app.UseAuthorization();
+app.UseCors("AllowSpecificOrigin");
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-    endpoints.MapFallbackToFile("index.html");
-});
+app.MapControllers();
+app.MapFallbackToFile("index.html");
+
 
 app.Run();
