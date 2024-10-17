@@ -1,0 +1,35 @@
+services:
+  app:
+    image: mcr.microsoft.com/dotnet/aspnet:8.0
+    container_name: UserManagementImage
+    ports:
+      - "5000:80"
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    command: ["dotnet", "UserManagementApi.dll"]
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=UserManagementDb;Username=postgres;Password=ps12345
+
+  build:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: build_container
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    command: ["dotnet", "build"]
+
+  db:
+    image: postgres:17
+    container_name: UserManagementDbContainer
+    environment:
+      POSTGRES_DB: UserManagementDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ps12345
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
