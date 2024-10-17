@@ -9,5 +9,11 @@ namespace UserManagementApi.Data
 
         public DbSet<User> Users { get; set; }
 
+        public async Task ClearDatabaseAsync()
+        {
+            Users.RemoveRange(Users);
+            await SaveChangesAsync();
+        }
+
     }
 }
