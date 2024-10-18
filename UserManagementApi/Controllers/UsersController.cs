@@ -74,7 +74,6 @@ namespace UserManagementApi.Controllers
                 return NotFound();
             }
 
-            // Verificar se o novo username ou email já existem
             if (await _context.Users.AnyAsync(u => u.Username == updateUserModel.Username && u.Id != id))
             {
                 return BadRequest("Username already exists.");
