@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgModel } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -8,23 +8,23 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [NgModel]
+  imports: [FormsModule]
 })
 export class LoginComponent {
-  email: string = '';
+  username: string = '';
   password: string = '';
 
   constructor(private authService: AuthService, private router: Router) { }
 
   onSubmit() {
-    this.authService.login(this.email, this.password).subscribe(
-      response => {
+    this.authService.login(this.username, this.password).subscribe({
+      next: response => {
         console.log('Login bem-sucedido:', response);
         this.router.navigate(['/users']);
       },
-      error => {
+      error: error => {
         console.error('Erro de login:', error);
       }
-    );
+    });
   }
 }

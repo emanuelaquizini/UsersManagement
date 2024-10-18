@@ -1,24 +1,27 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="text-center">Login</h3>
-        </div>
-        <div class="card-body">
-          <form (ngSubmit)="onSubmit()">
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" class="form-control" [(ngModel)]="email" name="email" required>
-            </div>
-            <div class="form-group mt-3">
-              <label for="password">Senha</label>
-              <input type="password" id="password" class="form-control" [(ngModel)]="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary mt-4 w-100">Entrar</button>
-          </form>
-        </div>
-      </div>
+<div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <div class="form-group">
+      <label for="username">Nome de Usuário:</label>
+      <input type="username"
+             id="username"
+             name="username"
+             class="form-control"
+             [(ngModel)]="username"
+             required />
     </div>
-  </div>
+    <div class="form-group">
+      <label for="password">Senha:</label>
+      <input type="password"
+             id="password"
+             name="password"
+             class="form-control"
+             [(ngModel)]="password"
+             required
+             minlength="6" />
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!loginForm.form.valid">
+      Entrar
+    </button>
+  </form>
 </div>
