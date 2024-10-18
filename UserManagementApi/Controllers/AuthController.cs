@@ -20,14 +20,13 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel login)
     {
-        var user = await _context.Users.FindAsync(login.Username);
-
-        if (user == null)
+ 
+        if (!await _context.Users.AnyAsync(e => e.Username == login.Username))
         {
             return NotFound();
         }
 
-        if (login.Password == user.Password)
+        if (await _context.Users.AnyAsync(e => e.Username == login.Username && e.Password == login.Password))
         {
             var token = _tokenService.GenerateToken(login.Username);
             return Ok(new { Token = token });
