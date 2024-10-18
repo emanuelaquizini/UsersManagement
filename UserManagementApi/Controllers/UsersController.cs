@@ -65,5 +65,64 @@ namespace UserManagementApi.Controllers
             return CreatedAtAction(nameof(GetUserByUsername), new { username = user.Username }, user);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UpdateUserModel updateUserModel)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Verificar se o novo username ou email já existem
+            if (await _context.Users.AnyAsync(u => u.Username == updateUserModel.Username && u.Id != id))
+            {
+                return BadRequest("Username already exists.");
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email == updateUserModel.Email && u.Id != id))
+            {
+                return BadRequest("Email already exists.");
+            }
+
+
+            user.Username = updateUserModel.Username;
+            user.Email = updateUserModel.Email;
+            user.Password = updateUserModel.Password;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "An error occurred while updating the user.");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(user);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "An error occurred while deleting the user.");
+            }
+
+            return NoContent();
+        }
+
     }
 }
